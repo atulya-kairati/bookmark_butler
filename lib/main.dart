@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:bookmark_butler/models/bookmark.dart';
 import 'package:bookmark_butler/provider/bookmark_notifier.dart';
 import 'package:bookmark_butler/repositories/bookmark_repository.dart';
 import 'package:bookmark_butler/repositories/tag_repository.dart';
