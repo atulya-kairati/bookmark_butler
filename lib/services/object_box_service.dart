@@ -1,25 +1,40 @@
 import 'package:bookmark_butler/models/bookmark.dart';
+import 'package:bookmark_butler/models/tag.dart';
 import 'package:bookmark_butler/objectbox.g.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 class ObjectBoxService {
-  late final Store _store;
+  late final Store _bookmarkStore;
+  late final Store _tagStore;
   late final Box<Bookmark> _bookmarks;
+  late final Box<Tag> _tags;
 
   static ObjectBoxService? _service;
 
-  ObjectBoxService._create(this._store) {
-    _bookmarks = _store.box<Bookmark>();
+  ObjectBoxService._create(this._bookmarkStore, this._tagStore) {
+    _bookmarks = _bookmarkStore.box<Bookmark>();
+    _tags = _tagStore.box<Tag>();
   }
 
   static Future<ObjectBoxService> init() async {
     try {
       final docsDir = await getApplicationDocumentsDirectory();
-      final store =
-          await openStore(directory: p.join(docsDir.path, "bookmarks-obj"));
+      final bookmarkStore = await openStore(
+        directory: p.join(
+          docsDir.path,
+          "bookmarks-obj",
+        ),
+      );
 
-      _service = ObjectBoxService._create(store);
+      final tagStore = await openStore(
+        directory: p.join(
+          docsDir.path,
+          "tags-obj",
+        ),
+      );
+
+      _service = ObjectBoxService._create(bookmarkStore, tagStore);
 
       return _service!;
     } catch (e) {
@@ -74,5 +89,13 @@ class ObjectBoxService {
 
   Future<bool> removeBookmark(int id) async {
     return _bookmarks.removeAsync(id);
+  }
+
+  Future<Set<String>> getTagSet() async {
+    return (await _tags.getAllAsync()).map((t) => t.tag).toSet();
+  }
+
+  Future<List<int>> saveTags(List<Tag> tags) async {
+    return _tags.putManyAsync(tags);
   }
 }

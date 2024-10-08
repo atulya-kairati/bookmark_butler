@@ -46,10 +46,31 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:5424692782619351917",
+      "lastPropertyId": "2:5102429463441030619",
+      "name": "Tag",
+      "properties": [
+        {
+          "id": "1:3581002600440567240",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5102429463441030619",
+          "name": "tag",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:5520630975937873639"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:1311039215657872920",
-  "lastIndexId": "0:0",
+  "lastEntityId": "2:5424692782619351917",
+  "lastIndexId": "1:5520630975937873639",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

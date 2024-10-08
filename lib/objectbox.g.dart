@@ -15,6 +15,7 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'models/bookmark.dart';
+import 'models/tag.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -62,6 +63,26 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(2, 5424692782619351917),
+      name: 'Tag',
+      lastPropertyId: const obx_int.IdUid(2, 5102429463441030619),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 3581002600440567240),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5102429463441030619),
+            name: 'tag',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(1, 5520630975937873639))
+      ],
+      relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
 ];
 
@@ -100,8 +121,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(1, 1311039215657872920),
-      lastIndexId: const obx_int.IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(2, 5424692782619351917),
+      lastIndexId: const obx_int.IdUid(1, 5520630975937873639),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
@@ -161,6 +182,32 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
 
           return object;
+        }),
+    Tag: obx_int.EntityDefinition<Tag>(
+        model: _entities[1],
+        toOneRelations: (Tag object) => [],
+        toManyRelations: (Tag object) => {},
+        getId: (Tag object) => object.id,
+        setId: (Tag object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Tag object, fb.Builder fbb) {
+          final tagOffset = fbb.writeString(object.tag);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, tagOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final tagParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final object = Tag(tagParam)
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+          return object;
         })
   };
 
@@ -196,4 +243,13 @@ class Bookmark_ {
   /// See [Bookmark.description].
   static final description =
       obx.QueryStringProperty<Bookmark>(_entities[0].properties[6]);
+}
+
+/// [Tag] entity fields to define ObjectBox queries.
+class Tag_ {
+  /// See [Tag.id].
+  static final id = obx.QueryIntegerProperty<Tag>(_entities[1].properties[0]);
+
+  /// See [Tag.tag].
+  static final tag = obx.QueryStringProperty<Tag>(_entities[1].properties[1]);
 }
