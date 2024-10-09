@@ -20,8 +20,20 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
 
   Set<String> selectedTags = {};
 
+  late Bookmark? savedBookmark;
+
   @override
   Widget build(BuildContext context) {
+    savedBookmark = ModalRoute.of(context)?.settings.arguments as Bookmark?;
+    if (savedBookmark != null) {
+      final bookmark = savedBookmark!;
+
+      urlController.text = bookmark.url;
+      titleController.text = bookmark.title;
+      descriptionController.text = bookmark.description;
+      selectedTags = bookmark.tags.toSet();
+    }
+
     final notifier = Provider.of<BookmarkNotifier>(context, listen: false);
     print("_AddBookmarkScreenState.build called");
 
@@ -82,12 +94,7 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
             child: const Text("Save"),
             onPressed: () async {
               try {
-                await notifier.addBookmark(Bookmark(
-                  urlController.text,
-                  titleController.text,
-                  descriptionController.text,
-                  selectedTags.toList(),
-                ));
+                await notifier.addBookmark(constructBookmark());
 
                 if (!mounted)
                   return; // dont proceed if the component isnt mounted anymore
@@ -108,5 +115,25 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
     titleController.dispose();
     descriptionController.dispose();
     super.dispose();
+  }
+
+  Bookmark constructBookmark() {
+    if (savedBookmark == null) {
+      return Bookmark(
+        urlController.text,
+        titleController.text,
+        descriptionController.text,
+        selectedTags.toList(),
+      );
+    }
+
+    final bookmark = savedBookmark!;
+
+    bookmark.url = urlController.text;
+    bookmark.title = titleController.text;
+    bookmark.description = descriptionController.text;
+    bookmark.tags = selectedTags.toList();
+
+    return bookmark;
   }
 }

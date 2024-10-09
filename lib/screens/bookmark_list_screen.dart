@@ -1,4 +1,5 @@
 import 'package:bookmark_butler/provider/bookmark_notifier.dart';
+import 'package:bookmark_butler/widgets/bookmark_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,14 +23,7 @@ class BookmarkListScreen extends StatelessWidget {
           return ListView.builder(
             itemCount: bookmarkNotifier.bookmarks.length,
             itemBuilder: (context, index) {
-              final bookmark = bookmarkNotifier.bookmarks[index];
-
-              return ListTile(
-                key: Key("${bookmark.id}"),
-                title: Text(bookmark.title),
-                trailing: Text(bookmark.url),
-                subtitle: Text(bookmark.description),
-              );
+              return BookmarkTile(bookmark: bookmarkNotifier.bookmarks[index]);
             },
           );
         },
