@@ -3,6 +3,7 @@ import 'package:bookmark_butler/repositories/bookmark_repository.dart';
 import 'package:bookmark_butler/repositories/tag_repository.dart';
 import 'package:bookmark_butler/screens/add_bookmark_screen.dart';
 import 'package:bookmark_butler/screens/bookmark_list_screen.dart';
+import 'package:bookmark_butler/screens/home_screen.dart';
 import 'package:bookmark_butler/services/object_box_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,8 +56,9 @@ class MyApp extends StatelessWidget {
       routes: {
         BookmarkListScreen.route: (_) => const BookmarkListScreen(),
         AddBookmarkScreen.route: (_) => const AddBookmarkScreen(),
+        HomeScreen.route: (_) => const HomeScreen(),
       },
-      initialRoute: BookmarkListScreen.route,
+      initialRoute: HomeScreen.route,
     );
   }
 }

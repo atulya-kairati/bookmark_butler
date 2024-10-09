@@ -1,5 +1,4 @@
 import 'package:bookmark_butler/provider/bookmark_notifier.dart';
-import 'package:bookmark_butler/screens/add_bookmark_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,12 +12,7 @@ class BookmarkListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AddBookmarkScreen.route);
-        },
-        child: const Icon(Icons.add),
-      ),
+      appBar: AppBar(),
       body: Consumer<BookmarkNotifier>(
         builder: (context, bookmarkNotifier, child) {
           if (bookmarkNotifier.loading) {

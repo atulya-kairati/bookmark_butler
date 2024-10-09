@@ -26,6 +26,7 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
     print("_AddBookmarkScreenState.build called");
 
     return Scaffold(
+      appBar: AppBar(),
       body: Column(
         children: [
           TextField(

@@ -13,18 +13,21 @@ class BookmarkNotifier extends ChangeNotifier {
     TagRepository tagRepository,
   )   : _bookmarkRepository = bookmarkRepository,
         _tagRepository = tagRepository {
-    loadBookmarks();
+    // loadBookmarks();
     loadTags();
   }
 
   Set<String> _tags = {};
-  Set<String> get tags => _tags;
+  List<String> get tags => _tags.toList();
 
   List<Bookmark> _bookmarks = [];
   bool _loading = false;
 
   WorkPacket _work = WorkPacket.none();
-  set action(WorkPacket wp) => _work = wp;
+  set work(WorkPacket wp) {
+    _bookmarks.clear();
+    _work = wp;
+  }
 
   List<Bookmark> get bookmarks => List.unmodifiable(_bookmarks);
   bool get loading => _loading;
@@ -33,7 +36,6 @@ class BookmarkNotifier extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    _bookmarks.clear();
     await Future.delayed(const Duration(seconds: 1));
 
     switch (_work.work) {
@@ -52,8 +54,12 @@ class BookmarkNotifier extends ChangeNotifier {
   }
 
   Future<void> loadTags() async {
+    _loading = true;
+    notifyListeners();
     _tags = await _tagRepository.getTags();
-    print("tags: $tags");
+
+    _loading = false;
+    notifyListeners();
   }
 
   Future<void> addBookmark(Bookmark bookmark) async {
