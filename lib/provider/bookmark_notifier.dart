@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bookmark_butler/models/work_packet.dart';
 import 'package:bookmark_butler/models/bookmark.dart';
 import 'package:bookmark_butler/repositories/bookmark_repository.dart';
@@ -72,5 +74,10 @@ class BookmarkNotifier extends ChangeNotifier {
     await _tagRepository
         .saveTags(tags.where((tag) => !_tags.contains(tag)).toList());
     loadTags();
+  }
+
+  Future<List<Bookmark>> searchBookmarks(String searchTerm) async {
+    log("searchBookmarks $searchTerm");
+    return _bookmarkRepository.bookmarkByKeyword(searchTerm);
   }
 }
