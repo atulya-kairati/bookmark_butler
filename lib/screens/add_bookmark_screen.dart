@@ -21,90 +21,134 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
   Set<String> selectedTags = {};
 
   late Bookmark? savedBookmark;
+  late BookmarkNotifier notifier;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      savedBookmark = ModalRoute.of(context)?.settings.arguments as Bookmark?;
+      if (savedBookmark != null) {
+        final bookmark = savedBookmark!;
+
+        urlController.text = bookmark.url;
+        titleController.text = bookmark.title;
+        descriptionController.text = bookmark.description;
+        selectedTags = bookmark.tags.toSet();
+
+        setState(() {}); // since we updated selectedTags
+      }
+
+      notifier = Provider.of<BookmarkNotifier>(context, listen: false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    savedBookmark = ModalRoute.of(context)?.settings.arguments as Bookmark?;
-    if (savedBookmark != null) {
-      final bookmark = savedBookmark!;
+    print("_AddBookmarkScreenState.build called $selectedTags");
 
-      urlController.text = bookmark.url;
-      titleController.text = bookmark.title;
-      descriptionController.text = bookmark.description;
-      selectedTags = bookmark.tags.toSet();
-    }
-
-    final notifier = Provider.of<BookmarkNotifier>(context, listen: false);
-    print("_AddBookmarkScreenState.build called");
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          TextField(
-            controller: urlController,
-          ),
-          TextField(
-            controller: titleController,
-          ),
-          TextField(
-            controller: descriptionController,
-          ),
-          Row(
-            children: selectedTags.map((tag) => Text(tag)).toList(),
-          ),
-          Autocomplete(
-            optionsBuilder: (tev) {
-              if (tev.text == "") {
-                return const <String>[];
-              }
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(
+              height: height * 0.16,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox.square(
+                    dimension: height * 0.16,
+                    child: Card(
+                      // margin: EdgeInsets.all(8),
+                      child: Image.network(
+                        "https://api.flutter.dev/flutter/static-assets/favicon.png",
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: selectedTags
+                            .map((tag) => Chip(label: Text(tag)))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            TextField(
+              controller: urlController,
+            ),
+            TextField(
+              controller: titleController,
+            ),
+            TextField(
+              controller: descriptionController,
+            ),
+            Autocomplete(
+              optionsBuilder: (tev) {
+                if (tev.text == "") {
+                  return const <String>[];
+                }
 
-              return notifier.tags
-                  .where((tag) => tag.contains(tev.text.toLowerCase()));
-            },
-            fieldViewBuilder:
-                (context, viewFieldController, focusNode, onFieldSubmitted) {
-              return TextField(
-                controller: viewFieldController,
-                focusNode: focusNode,
-                decoration: const InputDecoration(
-                  hintText: "Start typing a Tag",
-                ),
-                onSubmitted: (value) {
-                  if (selectedTags.contains(value)) return;
-                  // TODO: pop a toast when tag already exists
+                return notifier.tags
+                    .where((tag) => tag.contains(tev.text.toLowerCase()));
+              },
+              fieldViewBuilder:
+                  (context, viewFieldController, focusNode, onFieldSubmitted) {
+                return TextField(
+                  controller: viewFieldController,
+                  focusNode: focusNode,
+                  decoration: const InputDecoration(
+                    hintText: "Start typing a Tag",
+                  ),
+                  onSubmitted: (value) {
+                    if (selectedTags.contains(value)) return;
+                    // TODO: pop a toast when tag already exists
 
-                  setState(() {
-                    selectedTags.add(value);
-                  });
+                    setState(() {
+                      selectedTags.add(value);
+                    });
 
-                  viewFieldController.clear();
+                    viewFieldController.clear();
 
-                  print(selectedTags);
+                    print(selectedTags);
 
-                  onFieldSubmitted(); // to close the autocomplete dropdown
-                },
-              );
-            },
-            onSelected: (option) {
-              print(option);
-            },
-          ),
-          TextButton(
-            child: const Text("Save"),
-            onPressed: () async {
-              try {
-                await notifier.addBookmark(constructBookmark());
+                    onFieldSubmitted(); // to close the autocomplete dropdown
+                  },
+                );
+              },
+              onSelected: (option) {
+                print(option);
+              },
+            ),
+            TextButton(
+              child: const Text("Save"),
+              onPressed: () async {
+                try {
+                  await notifier.addBookmark(constructBookmark());
 
-                if (!mounted)
-                  return; // dont proceed if the component isnt mounted anymore
-                Navigator.pop(context);
-              } catch (e) {
-                log("Error occurred while saving the bookamrk: $e");
-              }
-            },
-          ),
-        ],
+                  if (!mounted) {
+                    return; // dont proceed if the component isnt mounted anymore
+                  }
+                  Navigator.pop(context);
+                } catch (e) {
+                  log("Error occurred while saving the bookamrk: $e");
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

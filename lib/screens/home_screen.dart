@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:bookmark_butler/models/bookmark.dart';
 import 'package:bookmark_butler/models/work_packet.dart';
 import 'package:bookmark_butler/provider/bookmark_notifier.dart';
 import 'package:bookmark_butler/screens/add_bookmark_screen.dart';
 import 'package:bookmark_butler/screens/bookmark_list_screen.dart';
 import 'package:bookmark_butler/screens/setting_screen.dart';
+import 'package:bookmark_butler/widgets/ask_for_url_dialog.dart';
 import 'package:bookmark_butler/widgets/bookmark_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +21,23 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, AddBookmarkScreen.route);
+          // Navigator.pushNamed(context, AddBookmarkScreen.route);
+
+          askForUrl(context, (url) {
+            log(url);
+            // TODO: fetch favicon, description and pass it as bookmark to the add screen
+            Navigator.pushNamed(
+              context,
+              AddBookmarkScreen.route,
+              arguments: Bookmark(
+                // TODO: create Bookmark from fetched data
+                "http://manus.chaubey",
+                "Manus ka illaka",
+                "Chal nikal bole to",
+                [],
+              ),
+            );
+          });
         },
         child: const Icon(Icons.add),
       ),
