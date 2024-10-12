@@ -1,5 +1,6 @@
 import 'package:bookmark_butler/models/bookmark.dart';
 import 'package:bookmark_butler/screens/add_bookmark_screen.dart';
+import 'package:bookmark_butler/widgets/favicon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +18,7 @@ class BookmarkTile extends StatelessWidget {
     return Card(
       child: ListTile(
         key: Key("${bookmark.id}"),
-        leading: const FlutterLogo(),
+        leading: FaviconWidget(url: bookmark.url),
         title: Text(bookmark.title),
         subtitle: Text(
           bookmark.description,

@@ -6,6 +6,7 @@ import 'package:bookmark_butler/provider/bookmark_notifier.dart';
 import 'package:bookmark_butler/screens/add_bookmark_screen.dart';
 import 'package:bookmark_butler/screens/bookmark_list_screen.dart';
 import 'package:bookmark_butler/screens/setting_screen.dart';
+import 'package:bookmark_butler/services/url_service.dart';
 import 'package:bookmark_butler/widgets/ask_for_url_dialog.dart';
 import 'package:bookmark_butler/widgets/bookmark_tile.dart';
 import 'package:flutter/material.dart';
@@ -23,17 +24,17 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           // Navigator.pushNamed(context, AddBookmarkScreen.route);
 
-          askForUrl(context, (url) {
+          askForUrl(context, (url) async {
             log(url);
-            // TODO: fetch favicon, description and pass it as bookmark to the add screen
+            final (title, desc) = await getSiteInfo(url);
+
             Navigator.pushNamed(
               context,
               AddBookmarkScreen.route,
               arguments: Bookmark(
-                // TODO: create Bookmark from fetched data
-                "http://manus.chaubey",
-                "Manus ka illaka",
-                "Chal nikal bole to",
+                url,
+                title,
+                desc,
                 [],
               ),
             );

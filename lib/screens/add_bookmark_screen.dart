@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bookmark_butler/models/bookmark.dart';
 import 'package:bookmark_butler/provider/bookmark_notifier.dart';
+import 'package:bookmark_butler/widgets/favicon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,9 +66,7 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
                     dimension: height * 0.16,
                     child: Card(
                       // margin: EdgeInsets.all(8),
-                      child: Image.network(
-                        "https://api.flutter.dev/flutter/static-assets/favicon.png",
-                      ),
+                      child: FaviconWidget(url: urlController.text),
                     ),
                   ),
                   Expanded(
@@ -88,6 +87,9 @@ class _AddBookmarkScreenState extends State<AddBookmarkScreen> {
             ),
             TextField(
               controller: urlController,
+              onChanged: (value) {
+                setState(() {});
+              },
             ),
             TextField(
               controller: titleController,
