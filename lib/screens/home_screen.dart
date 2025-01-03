@@ -26,6 +26,8 @@ class HomeScreen extends StatelessWidget {
 
           askForUrl(context, (url) async {
             log(url);
+
+            // TODO: proceed to add page if request fails
             final (title, desc) = await getSiteInfo(url);
 
             Navigator.pushNamed(
